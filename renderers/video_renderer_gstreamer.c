@@ -186,7 +186,7 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     gst_pipeline_use_clock(GST_PIPELINE_CAST(renderer->pipeline), clock);
 
     renderer->appsrc = gst_bin_get_by_name (GST_BIN (renderer->pipeline), "video_source");
-    
+
     selector = gst_bin_get_by_name(GST_BIN(renderer->pipeline), "selector");
     video_pad = gst_element_get_static_pad(selector, "sink_0");
     image_pad = gst_element_get_static_pad(selector, "sink_1");
@@ -226,14 +226,14 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
         logger_log(logger, LOGGER_ERR, "Failed to initialize GStreamer video renderer");
     }
 
-    g_object_set(selector, "active_pad", image_pad);
+    g_object_set(selector, "active-pad", image_pad);
 
     gst_element_set_state (renderer->pipeline, GST_STATE_PLAYING);
 }
 
 void video_renderer_pause() {
     logger_log(logger, LOGGER_DEBUG, "video renderer paused");
-    g_object_set(selector, "active_pad", image_pad);
+    g_object_set(selector, "active-pad", image_pad);
 }
 
 void video_renderer_resume() {
