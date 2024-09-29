@@ -41,6 +41,9 @@ static unsigned short width, height, width_source, height_source;  /* not curren
 static bool first_packet = false;
 static bool sync = false;
 
+static GstElement *selector;
+static GstPad *video_pad, *image_pad;
+
 struct video_renderer_s {
     GstElement *appsrc, *pipeline, *sink;
     GstBus *bus;
@@ -156,6 +159,9 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     g_string_append(launch, converter);
     g_string_append(launch, " ! ");    
     append_videoflip(launch, &videoflip[0], &videoflip[1]);
+    g_string_append(launch, " selector.sink_0");
+    g_string_append(launch, " videotestsrc pattern=1 ! selector.sink_0");
+    g_string_append(launch, " input-selector name=selector ! ");
     g_string_append(launch, videosink);
     g_string_append(launch, " name=video_sink");
     if (*video_sync) {
@@ -175,6 +181,10 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     gst_pipeline_use_clock(GST_PIPELINE_CAST(renderer->pipeline), clock);
 
     renderer->appsrc = gst_bin_get_by_name (GST_BIN (renderer->pipeline), "video_source");
+    selector = gst_bin_get_by_name(GST_BIN(pipeline), "selector");
+    video_pad = gst_element_get_static_pad("sink_0");
+    image_pad = gst_element_get_static_pad("sink_1");
+
     g_assert(renderer->appsrc);
     caps = gst_caps_from_string(h264_caps);
     g_object_set(renderer->appsrc, "caps", caps, "stream-type", 0, "is-live", TRUE, "format", GST_FORMAT_TIME, NULL);
@@ -219,17 +229,21 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     } else {
         logger_log(logger, LOGGER_ERR, "Failed to initialize GStreamer video renderer");
     }
+
+    g_object_set(selector, "active_pad", image_pad);
+
+    gst_element_set_state (renderer->pipeline, GST_STATE_PLAYING);
 }
 
 void video_renderer_pause() {
     logger_log(logger, LOGGER_DEBUG, "video renderer paused");
-    gst_element_set_state(renderer->pipeline, GST_STATE_PAUSED);
+    g_object_set(selector, "active_pad", image_pad);
 }
 
 void video_renderer_resume() {
     if (video_renderer_is_paused()) {
         logger_log(logger, LOGGER_DEBUG, "video renderer resumed");
-        gst_element_set_state (renderer->pipeline, GST_STATE_PLAYING);
+        g_object_set(selector, "active_pad", video_pad);
         gst_video_pipeline_base_time = gst_element_get_base_time(renderer->appsrc);
     }
 }
