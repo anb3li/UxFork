@@ -157,7 +157,13 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     renderer = calloc(1, sizeof(video_renderer_t));
     g_assert(renderer);
 
-    GString *launch = g_string_new("appsrc name=video_source ! ");
+    GString *launch = g_string_new("input-selector name=selector ! ");
+    g_string_append(launch, "videoconvert ! ");
+    g_string_append(launch, "videoscale ! ");
+    g_string_append(launch, videosink);
+
+    
+    g_string_append(launch, "appsrc name=video_source ! ");
     g_string_append(launch, "queue ! ");
     g_string_append(launch, parser);
     g_string_append(launch, " ! ");
@@ -165,10 +171,12 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     g_string_append(launch, " ! ");
     append_videoflip(launch, &videoflip[0], &videoflip[1]);
     g_string_append(launch, "selector.sink_1 ");
+
+
     g_string_append(launch, "videotestsrc pattern=1 ! selector.sink_2 ");
-    g_string_append(launch, "input-selector name=selector ! ");
-    g_string_append(launch, "videoscale ! ");
-    g_string_append(launch, videosink);
+
+    g_print("Launching with : ", launch->str);
+
     if (*video_sync) {
         g_string_append(launch, " sync=true");
         sync = true;
