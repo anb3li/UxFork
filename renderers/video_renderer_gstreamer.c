@@ -235,7 +235,7 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
         logger_log(logger, LOGGER_ERR, "Failed to initialize GStreamer video renderer");
     }
 
-    g_object_set(selector, "active-pad", image_pad, NULL);
+    g_object_set(selector, "active-pad", video_pad, NULL);
 
     gst_element_set_state (renderer->pipeline, GST_STATE_PLAYING);
 }
