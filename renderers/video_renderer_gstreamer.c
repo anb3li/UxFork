@@ -160,10 +160,16 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     GString *launch = g_string_new("input-selector name=selector ! ");
     g_string_append(launch, "videoscale ! ");
     g_string_append(launch, videosink);
-    g_string_append(launch, " ");
+        if (*video_sync) {
+        g_string_append(launch, " sync=true ");
+        sync = true;
+    } else {
+        g_string_append(launch, " sync=false ");
+        sync = false;
+    }
 
     
-    //g_string_append(launch, " appsrc name=video_source ! ");
+    //g_string_append(launch, "appsrc name=video_source ! ");
     //g_string_append(launch, "queue ! ");
     //g_string_append(launch, parser);
     //g_string_append(launch, " ! ");
@@ -174,13 +180,6 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
 
     g_string_append(launch, "videotestsrc pattern=1 ! selector.sink_2");
 
-    if (*video_sync) {
-        g_string_append(launch, " sync=true");
-        sync = true;
-    } else {
-        g_string_append(launch, " sync=false");
-        sync = false;
-    }
     logger_log(logger, LOGGER_DEBUG, "GStreamer video pipeline will be:\n\"%s\"", launch->str);
     renderer->pipeline = gst_parse_launch(launch->str, &error);
     if (error) {
