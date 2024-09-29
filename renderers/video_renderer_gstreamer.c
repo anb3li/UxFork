@@ -164,8 +164,8 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     g_string_append(launch, decoder);
     g_string_append(launch, " ! ");
     append_videoflip(launch, &videoflip[0], &videoflip[1]);
-    g_string_append(launch, "selector.sink_0 ");
-    g_string_append(launch, "videotestsrc pattern=1 ! selector.sink_0 ");
+    g_string_append(launch, "selector.sink_1 ");
+    g_string_append(launch, "videotestsrc pattern=1 ! selector.sink_2 ");
     g_string_append(launch, "input-selector name=selector ! ");
     g_string_append(launch, "videoscale ! ");
     g_string_append(launch, videosink);
@@ -188,8 +188,8 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     renderer->appsrc = gst_bin_get_by_name (GST_BIN (renderer->pipeline), "video_source");
 
     selector = gst_bin_get_by_name(GST_BIN(renderer->pipeline), "selector");
-    video_pad = gst_element_get_static_pad(selector, "sink_0");
-    image_pad = gst_element_get_static_pad(selector, "sink_1");
+    video_pad = gst_element_get_static_pad(selector, "sink_1");
+    image_pad = gst_element_get_static_pad(selector, "sink_2");
 
     g_assert(renderer->appsrc);
     caps = gst_caps_from_string(h264_caps);
