@@ -186,9 +186,10 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     gst_pipeline_use_clock(GST_PIPELINE_CAST(renderer->pipeline), clock);
 
     renderer->appsrc = gst_bin_get_by_name (GST_BIN (renderer->pipeline), "video_source");
-    selector = gst_bin_get_by_name(GST_BIN(pipeline), "selector");
-    video_pad = gst_element_get_static_pad("sink_0");
-    image_pad = gst_element_get_static_pad("sink_1");
+    
+    selector = gst_bin_get_by_name(GST_BIN(renderer->pipeline), "selector");
+    video_pad = gst_element_get_static_pad(selector, "sink_0");
+    image_pad = gst_element_get_static_pad(selector, "sink_1");
 
     g_assert(renderer->appsrc);
     caps = gst_caps_from_string(h264_caps);
