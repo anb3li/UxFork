@@ -226,20 +226,20 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
         logger_log(logger, LOGGER_ERR, "Failed to initialize GStreamer video renderer");
     }
 
-    g_object_set(selector, "active-pad", image_pad);
+    g_object_set(selector, "active-pad", image_pad, NULL);
 
     gst_element_set_state (renderer->pipeline, GST_STATE_PLAYING);
 }
 
 void video_renderer_pause() {
     logger_log(logger, LOGGER_DEBUG, "video renderer paused");
-    g_object_set(selector, "active-pad", image_pad);
+    g_object_set(selector, "active-pad", image_pad, NULL);
 }
 
 void video_renderer_resume() {
     if (video_renderer_is_paused()) {
         logger_log(logger, LOGGER_DEBUG, "video renderer resumed");
-        g_object_set(selector, "active-pad", video_pad);
+        g_object_set(selector, "active-pad", video_pad, NULL);
         gst_video_pipeline_base_time = gst_element_get_base_time(renderer->appsrc);
     }
 }
