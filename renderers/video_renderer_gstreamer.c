@@ -160,6 +160,7 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     GString *launch = g_string_new("input-selector name=selector ! ");
     g_string_append(launch, "videoscale ! ");
     g_string_append(launch, videosink);
+    g_string_append(launch, " ");
 
     
     //g_string_append(launch, " appsrc name=video_source ! ");
