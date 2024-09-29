@@ -163,7 +163,7 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     g_string_append(launch, videosink);
 
     
-    g_string_append(launch, "appsrc name=video_source ! ");
+    g_string_append(launch, " appsrc name=video_source ! ");
     g_string_append(launch, "queue ! ");
     g_string_append(launch, parser);
     g_string_append(launch, " ! ");
