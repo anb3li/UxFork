@@ -175,7 +175,7 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
 
     g_string_append(launch, "videotestsrc pattern=1 ! selector.sink_2 ");
 
-    g_print("Launching with : ", launch->str);
+    g_print(launch->str);
 
     if (*video_sync) {
         g_string_append(launch, " sync=true");
