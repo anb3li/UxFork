@@ -179,7 +179,9 @@ void  video_renderer_init(logger_t *render_logger, const char *server_name, vide
     g_string_append(launch, decoder);
     g_string_append(launch, " ! ");
     append_videoflip(launch, &videoflip[0], &videoflip[1]);
-    g_string_append(launch, "selector.sink_1 ");
+
+    //TEST
+    g_string_append(launch, " videotestsrc pattern=0 ! selector.sink_1 ");
 
     //IMAGESRC (TEST)
 
