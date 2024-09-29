@@ -239,7 +239,7 @@ void video_renderer_pause() {
 void video_renderer_resume() {
     if (video_renderer_is_paused()) {
         logger_log(logger, LOGGER_DEBUG, "video renderer resumed");
-        g_object_set(selector, "active_pad", video_pad);
+        g_object_set(selector, "active-pad", video_pad);
         gst_video_pipeline_base_time = gst_element_get_base_time(renderer->appsrc);
     }
 }
