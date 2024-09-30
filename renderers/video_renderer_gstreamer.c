@@ -324,33 +324,22 @@ void video_renderer_flush() {
 }
 
 void video_renderer_stop() {
-    return;
-    if (renderer) {
-        gst_app_src_end_of_stream (GST_APP_SRC(renderer->appsrc));
-        gst_element_set_state (renderer->pipeline, GST_STATE_NULL);
-    }
+    gst_app_src_end_of_stream (GST_APP_SRC(renderer->appsrc));
+    g_object_set(selector, "active-pad", image_pad, NULL);
 }
 
 void video_renderer_destroy() {
-    return;
+    video_renderer_stop();
     if (renderer) {
         GstState state;
-        gst_element_get_state(renderer->pipeline, &state, NULL, 0);
-        if (state != GST_STATE_NULL) {
-            gst_app_src_end_of_stream (GST_APP_SRC(renderer->appsrc));
-	    gst_element_set_state (renderer->pipeline, GST_STATE_NULL);
-        }
-        gst_object_unref(renderer->bus);
+        gst_app_src_end_of_stream (GST_APP_SRC(renderer->appsrc));
         gst_object_unref (renderer->appsrc);
-        gst_object_unref (renderer->pipeline);
 #ifdef X_DISPLAY_FIX
         if (renderer->gst_window) {
             free(renderer->gst_window);
             renderer->gst_window = NULL;
         }
 #endif
-        free (renderer);
-        renderer = NULL;
     }
 }
 
