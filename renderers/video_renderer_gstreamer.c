@@ -324,6 +324,7 @@ void video_renderer_flush() {
 }
 
 void video_renderer_stop() {
+    return;
     if (renderer) {
         gst_app_src_end_of_stream (GST_APP_SRC(renderer->appsrc));
         gst_element_set_state (renderer->pipeline, GST_STATE_NULL);
@@ -331,6 +332,7 @@ void video_renderer_stop() {
 }
 
 void video_renderer_destroy() {
+    return;
     if (renderer) {
         GstState state;
         gst_element_get_state(renderer->pipeline, &state, NULL, 0);
